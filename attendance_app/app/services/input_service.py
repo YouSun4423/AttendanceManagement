@@ -4,9 +4,17 @@ from openpyxl import load_workbook
 from flask import current_app
 from .excel_service import ensure_excel_initialized
 
+
 def save_input_data(form_data: dict):
+    """
+    入力フォームからのデータをExcelファイルに保存する
+
+    Parameters:
+    form_data (dict): 入力フォームからのデータ
+    """
+
     ensure_excel_initialized()
-    
+
     date_str = form_data["date"]
     start_str = f"{form_data['start_hour']}:{form_data['start_minute']}"
     end_str = f"{form_data['end_hour']}:{form_data['end_minute']}"
@@ -17,7 +25,7 @@ def save_input_data(form_data: dict):
         break_str = "00:00"
     try:
         break_h, break_m = map(int, break_str.split(":"))
-    except:
+    except ValueError:
         break_h, break_m = 0, 0
 
     # 実働時間計算

@@ -4,7 +4,19 @@ from datetime import datetime
 from flask import current_app
 import os
 
-def get_monthly_records(filename, sheet_name):
+
+def get_monthly_records(filename: str, sheet_name: str) -> dict:
+    """
+    Excelファイルから月次のレコードを取得する
+
+    Parameters:
+    filename (str): Excelファイルのパス
+    sheet_name (str): 対象のシート名
+
+    Returns:
+    dict: 月ごとのレコードを格納した辞書
+    """
+
     wb = load_workbook(filename)
     sheet = wb[sheet_name]
 
@@ -15,8 +27,9 @@ def get_monthly_records(filename, sheet_name):
             continue
         try:
             date_obj = datetime.strptime(vals[0], "%Y-%m-%d")
-        except:
+        except ValueError:
             continue
+
         reported = vals[7] in [True, "TRUE", "true", 1, "1"] if len(vals) > 7 else False
         month_key = date_obj.strftime("%Y-%m")
         monthly[month_key].append({
@@ -37,7 +50,15 @@ def get_monthly_records(filename, sheet_name):
 
     return dict(sorted(monthly.items()))
 
+
 def update_reported_flags(form_data):
+    """
+    入力フォームからのデータを基に、Excelファイルの報告フラグを更新する
+
+    Parameters:
+    form_data (dict): 入力フォームからのデータ
+    """
+
     path = os.path.join(current_app.instance_path, current_app.config["EXCEL_FILENAME"])
     wb = load_workbook(path)
     sheet = wb[current_app.config["EXCEL_SHEET"]]

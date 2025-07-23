@@ -5,8 +5,23 @@ from .views.summary import summary_bp
 from .config import Config
 import os
 
+
 def create_app(test_config=None):
-    app = Flask(__name__, instance_relative_config=True)
+    """
+    Flaskアプリケーションのファクトリ関数
+
+    Parameters:
+    test_config (dict, optional): テスト用の設定.デフォルトはNone
+
+    Returns:
+    Flask: 初期化されたFlaskアプリケーションインスタンス
+    """
+    app = Flask(
+        __name__,
+        instance_relative_config=True,
+        template_folder="templates",
+        static_folder="static"
+    )
     app.config.from_object(Config)
 
     if test_config:
