@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <title>勤怠入力</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gradient-to-br from-gray-50 to-blue-50 min-h-screen">
+<nav class="bg-blue-600 text-white px-6 py-3 shadow w-full mb-6">
+  <div class="flex justify-between items-center max-w-screen-xl mx-auto">
+      <div class="font-bold text-lg">勤怠管理</div>
+      <div class="space-x-4 text-sm">
+        <a href="/" class="hover:underline">勤怠入力</a>
+        <a href="/summary" class="hover:underline">月別集計</a>
+        <a href="/records" class="hover:underline">レコード一覧</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- 入力フォームを中央に配置 -->
+  <div class="flex items-center justify-center">
+    <div class="bg-white p-8 rounded-2xl shadow-xl w-full max-w-2xl space-y-6">
+    <h1 class="text-3xl font-bold text-center text-blue-700">勤怠入力フォーム</h1>
+
+    <form method="post" action="/submit" class="space-y-6">
+
+      <!-- 日付 -->
+      <div>
+        <label class="block text-sm font-semibold text-gray-700 mb-1">日付</label>
+        <input type="date" name="date" required
+        value="{{ today }}"
+        class="w-full rounded-xl border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500">
+      </div>
+
+      <!-- 出勤時間 -->
+      <div>
+        <label class="block text-sm font-semibold text-gray-700 mb-1">出勤時間</label>
+        <div class="flex gap-2">
+          <!-- 時 -->
+          <input type="number" name="start_hour" min="0" max="23" value="9" required
+                  class="w-1/2 rounded-lg border-gray-300 shadow-sm px-3 py-2 focus:ring-blue-500 focus:border-blue-500 text-center"
+                  placeholder="時">
+          <!-- 分 -->
+          <input type="number" name="start_minute" min="0" max="59" step="15" value="00" required
+                  class="w-1/2 rounded-lg border-gray-300 shadow-sm px-3 py-2 focus:ring-blue-500 focus:border-blue-500 text-center"
+                  placeholder="分">
+        </div>
+      </div>
+
+      <!-- 退勤時間 -->
+      <div>
+        <label class="block text-sm font-semibold text-gray-700 mb-1">退勤時間</label>
+        <div class="flex gap-2">
+          <!-- 時 -->
+          <input type="number" name="end_hour" min="0" max="23" value="10" required
+                  class="w-1/2 rounded-lg border-gray-300 shadow-sm px-3 py-2 focus:ring-blue-500 focus:border-blue-500 text-center"
+                  placeholder="時">
+          <!-- 分 -->
+          <input type="number" name="end_minute" min="0" max="59" step="15" value="00" required
+                  class="w-1/2 rounded-lg border-gray-300 shadow-sm px-3 py-2 focus:ring-blue-500 focus:border-blue-500 text-center"
+                  placeholder="分">
+        </div>
+      </div>
+
+      <!-- 休憩時間 -->
+      <div>
+        <label class="block text-sm font-semibold text-gray-700 mb-2">休憩時間</label>
+        <div class="grid grid-cols-4 gap-2">
+          {% for min in [0, 15, 30, 45, 60, 75, 90, 120] %}
+            <button type="button"
+                    data-break="{{ '%02d:%02d' % (min // 60, min % 60) }}"
+                    onclick="selectBreak(this.dataset.break, this)"
+                    class="break-button bg-gray-100 text-sm px-2 py-1 rounded-md hover:bg-blue-100">
+              {{ min // 60 }}h {{ min % 60 }}m
+            </button>
+          {% endfor %}
+        </div>
+        <input type="hidden" name="break_time" id="break_time">
+      </div>
+
+      <!-- プロジェクト名 -->
+      <div>
+        <label class="block text-sm font-semibold text-gray-700 mb-1">プロジェクト名</label>
+        <select name="project" required class="w-1/2 rounded-xl border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500">
+            <option disabled selected hidden></option>
+            {% for project in projects %}
+              <option value="{{ project }}">{{ project }}</option>
+            {% endfor %}
+        </select>
+      </div>
+
+      <!-- 業務内容 -->
+      <div>
+        <label class="block text-sm font-semibold text-gray-700 mb-1">業務内容</label>
+        <textarea name="content" rows="2" placeholder="例: バグ修正・レビュー"
+                  class="w-full rounded-xl border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500 resize-none"></textarea>
+      </div>
+
+      <!-- 送信ボタン -->
+      <div class="pt-4">
+        <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 px-4 rounded-xl transition">
+          勤怠を登録する
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <script>
+    function selectTime(inputId, value, btn) {
+      document.getElementById(inputId).value = value;
+      document.querySelectorAll('.time-button').forEach(b => b.classList.remove('bg-blue-200'));
+      if (btn) btn.classList.add('bg-blue-200');
+    }
+
+    function selectBreak(value, btn) {
+      document.getElementById('break_time').value = value;
+      document.querySelectorAll('.break-button').forEach(b => b.classList.remove('bg-blue-200'));
+      if (btn) btn.classList.add('bg-blue-200');
+    }
+  </script>
+</body>
+</html>

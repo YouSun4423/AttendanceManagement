@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <title>勤怠レコード一覧</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gradient-to-br from-gray-50 to-blue-50 min-h-screen">
+<nav class="bg-blue-600 text-white px-6 py-3 shadow w-full mb-6">
+  <div class="flex justify-between items-center max-w-screen-xl mx-auto">
+      <div class="font-bold text-lg">勤怠管理</div>
+      <div class="space-x-4 text-sm">
+        <a href="/" class="hover:underline">勤怠入力</a>
+        <a href="/summary" class="hover:underline">月別集計</a>
+        <a href="/records" class="hover:underline">レコード一覧</a>
+      </div>
+    </div>
+  </nav>
+  <div class="max-w-3xl mx-auto bg-white p-6 rounded-xl shadow">
+    <h1 class="text-2xl font-bold mb-6 text-center text-blue-700">月別 勤怠レコード一覧</h1>
+
+    {% for month, records in records_by_month.items() %}
+      <div class="mb-10">
+        <h2 class="text-xl font-semibold text-gray-700 mb-3">{{ month }}</h2>
+        <div class="overflow-auto">
+        <form method="POST" action="/update_reported">
+          <table class="min-w-full border-collapse border border-gray-300 text-sm">
+            <thead class="bg-blue-100">
+              <tr>
+                <th class="border px-3 py-2">日付</th>
+                <th class="border px-3 py-2">出勤</th>
+                <th class="border px-3 py-2">退勤</th>
+                <th class="border px-3 py-2">休憩</th>
+                <th class="border px-3 py-2">実働</th>
+                <th class="border px-3 py-2">プロジェクト</th>
+                <th class="border px-3 py-2">内容</th>
+                <th class="border px-4 py-2">報告</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for rec in records %}
+                <tr class="hover:bg-blue-50">
+                  <td class="border px-3 py-1">{{ rec.date }}</td>
+                  <td class="border px-3 py-1">{{ rec.start }}</td>
+                  <td class="border px-3 py-1">{{ rec.end }}</td>
+                  <td class="border px-3 py-1">{{ rec.break }}</td>
+                  <td class="border px-3 py-1">{{ rec.worked }}</td>
+                  <td class="border px-3 py-1">{{ rec.project }}</td>
+                  <td class="border px-3 py-1">{{ rec.content }}</td>
+                  <td class="border px-4 py-2">
+                    <input type="checkbox" name="reported_{{ rec.row }}" value="1" {% if rec.reported %}checked{% endif %}>
+                  </td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+            <div class="mt-4 text-right">
+              <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">更新</button>
+            </div>
+            </form>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+  </div>
+</body>
+</html>

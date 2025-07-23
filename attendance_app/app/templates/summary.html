@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>月別勤怠集計</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gradient-to-br from-gray-50 to-blue-50 min-h-screen">
+<nav class="bg-blue-600 text-white px-6 py-3 shadow w-full mb-6">
+  <div class="flex justify-between items-center max-w-screen-xl mx-auto">
+      <div class="font-bold text-lg">勤怠管理</div>
+      <div class="space-x-4 text-sm">
+        <a href="/" class="hover:underline">勤怠入力</a>
+        <a href="/summary" class="hover:underline">月別集計</a>
+        <a href="/records" class="hover:underline">レコード一覧</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="max-w-3xl mx-auto bg-white p-6 rounded-xl shadow">
+    <h1 class="text-2xl font-bold mb-4 text-center text-blue-700">月別勤怠集計</h1>
+
+    <table class="w-full table-auto border-collapse border border-gray-300">
+      <thead class="bg-blue-100">
+        <tr>
+          <th class="border px-4 py-2">月</th>
+          <th class="border px-4 py-2">出勤日数</th>
+          <th class="border px-4 py-2">稼働時間（h）</th>
+          <th class="border px-4 py-2">目安給料（円）</th>
+          <th class="border px-4 py-2">目標まで残り時間</th>
+          <th class="border px-4 py-2">未報告</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in summary_data %}
+        <tr class="text-center hover:bg-gray-50">
+          <td class="border px-4 py-2">{{ item.month }}</td>
+          <td class="border px-4 py-2">{{ item.days }}</td>
+          <td class="border px-4 py-2">{{ item.hours }}</td>
+          <td class="border px-4 py-2">¥{{ "{:,}".format(item.salary) }}</td>
+          <td class="border px-4 py-2">{{ item.needed_hours }} 時間</td>
+          <td class="border px-4 py-2">{{ item.unreported }} 件</td>
+        </tr>
+        {% else %}
+        <tr>
+          <td colspan="4" class="text-center py-4 text-gray-500">データがありません</td>
+        </tr>
+        {% endfor %}
+
+      </tbody>
+    </table>
+  </div>
+</body>
+</html>

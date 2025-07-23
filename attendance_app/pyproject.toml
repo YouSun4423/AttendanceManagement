@@ -1,0 +1,27 @@
+[project]
+name = "attendance-app"
+version = "0.1.0"
+description = "HTMLフォームから勤怠データをExcel(DBシート)に記録するFlaskアプリ"
+authors = [{ name = "Your Name" }]
+readme = "README.md"
+requires-python = ">=3.10"
+
+dependencies = [
+  "flask>=3.0,<4",
+  "openpyxl>=3.1,<4",
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest",
+  "ruff",
+  "black",
+]
+
+[tool.uv]
+# プロジェクトローカル仮想環境の作成場所などを制御可能
+# 例: "index-url" や "prerelease" の扱いなど設定可（必要なら追記）
+
+[tool.flask]
+# flask run に使うアプリパス（uv run経由でも利用）
+app = "attendance_app.app:app"
